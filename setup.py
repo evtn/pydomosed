@@ -31,6 +31,7 @@ setup(
     python_requires=">=3.6.*",
     install_requires=["aiohttp"],
     license=about['__license__'],
+    download_url="https://github.com/evtn/pydomosed/archive/v0.1.0.tar.gz",
     zip_safe=False,
     # https://pypi.org/classifiers/
     classifiers=[ 

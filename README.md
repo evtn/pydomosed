@@ -34,14 +34,13 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 ```
 
-
 ## Установка
 
-Склонируйте репозиторий и запустите `setup.py`
-В ближайшее время также появится возможность использовать pip:
+- Склонируйте репозиторий и запустите `setup.py`
 
-`pip install pydomosed`
+или воспользуйтесь pip:
 
+- `pip install pydomosed`
 
 
 ## Запросы к API
