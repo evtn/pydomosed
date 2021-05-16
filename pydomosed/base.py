@@ -32,7 +32,8 @@ class Session:
                 success=success,
                 request_info={
                     "method": method,
-                    "params": params
+                    "params": params,
+                    "base_url": self.base_url
                 }
             )
 
