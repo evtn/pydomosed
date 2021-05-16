@@ -1,5 +1,5 @@
 from aiohttp import web
-from typing import Callable, Any
+from typing import Callable
 import ssl
 from hashlib import md5
 
@@ -8,6 +8,7 @@ ssl_context.load_default_certs()
 
 
 class Hook:
+    method = "merchants.webhook.set"
     def __init__(self, session, url: str, port: int):
         if not url.startswith("http"):
             url = "http://%s" % url
@@ -21,7 +22,7 @@ class Hook:
 
     async def start(self, callback: Callable[[dict], None]) -> None:
         set_url = await self.session.request(
-            method="merchants.webhook.set",
+            method=self.method,
             url=self.get_url()
         )
         if not set_url.success:
@@ -33,14 +34,19 @@ class Hook:
         async def transfer(request):
             response = await request.json()
             hash_ = md5.new(
-                "{token}{amount}{from_id}".format(
+                "{token}{amount}{from_id}{id}".format(
                     token=self.session.params["access_token"],
-                    amount=response.get("amount"),
-                    from_id=response.get("fromId")
+                    amount=response.get("amount", ""),
+                    from_id=response.get("fromId", ""),
+                    id=response.get("id", "")
                 )
             ).digest()
-            if response.get("hash") != hash_:
-                raise ValueError("Invalid hash")
+            if "sig" in response:
+                if response.get("sig") != hash_:
+                    raise ValueError("Invalid hash")
+            else:
+                if response.get("hash") != hash_:
+                    raise ValueError("Invalid hash")
             callback(response)
             return web.Response(text="ok")
         
