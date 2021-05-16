@@ -31,7 +31,7 @@ setup(
     python_requires=">=3.6.*",
     install_requires=["aiohttp"],
     license=about['__license__'],
-    download_url="https://github.com/evtn/pydomosed/archive/v0.1.0.tar.gz",
+    download_url=f"https://github.com/evtn/pydomosed/archive/v{about['__version__']}.tar.gz",
     zip_safe=False,
     # https://pypi.org/classifiers/
     classifiers=[ 
@@ -41,7 +41,8 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9'   
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
     keywords='domosed api vk'
 )
