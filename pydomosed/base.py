@@ -5,9 +5,13 @@ import json
 Number = Union[int, float]
 JSONType = Union[Number, str, None, dict, list]
 
+api_urls = {
+    "domosed": "https://minebattle.ru/api/",
+    "race": "https://race-api.danyarub.ru/"
+}
 
 class Session:
-    base_url = "https://minebattle.ru/api/"
+    base_url = api_urls["domosed"]
     raise_on_error = False
 
     def __init__(self, token: str):
