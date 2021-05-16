@@ -26,7 +26,7 @@ class Session:
             headers={'Content-Type': 'application/json'},
         ) as req:
             data = await req.json()
-            success = ("response" in data)
+            success = "response" in data and req.status == 200
             return Response(
                 data=data,
                 success=success,
