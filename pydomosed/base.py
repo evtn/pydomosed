@@ -80,11 +80,13 @@ class Response:
 
     @property
     def error_code(self) -> Optional[JSONType]:
-        return self.data.get("error", {}).get("error_code")
+        error = self.data.get("error", {})
+        return error.get("error_code") or error.get("code")
 
     @property
     def error_msg(self) -> Optional[JSONType]:
-        return self.data.get("error", {}).get("error_msg")
+        error = self.data.get("error", {})
+        return error.get("error_msg") or error.get("message")
     
     def __str__(self) -> str:
         return "pydomosed Response object: {method} request{data}".format(
