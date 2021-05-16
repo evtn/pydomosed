@@ -1,7 +1,13 @@
-# PyDomosed - API-wrapper для мини-приложения Домосед
+# PyDomosed - API-wrapper для мини-приложений Домосед и Гонки
 
-[Документация API](https://vk.com/@domosedapp-domosed-api)    
-[Мини-приложение](https://vk.com/app7594692)
+Домосед (приложение закрыто):
+- [Документация API](https://vk.com/@domosedapp-domosed-api)    
+- [Мини-приложение](https://vk.com/app7594692)
+
+Гонки:
+- [Документация API](https://vk.com/@happyoffice-api)    
+- [Мини-приложение](https://vk.com/app7679912)
+
 
 ## Содержание:
 
@@ -14,7 +20,7 @@
 
 ## Базовое использование
 
-Чтобы использовать API Домоседа, необходимо создать объект сессии (`Session`)
+Чтобы использовать API, необходимо создать объект сессии (`Session`)
 На примере ниже создаётся event loop () и создаётся сессия и выводится ответ метода `merchants.getInfo`.    
 `merchants.getInfo` здесь и далее приведен для примера.
 
@@ -30,8 +36,27 @@ async def main():
         print(info)
         
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+asyncio.run(main())
+```
+
+### Использование API Гонок
+
+Чтобы использовать API Гонок, замените `Session.base_url` на `Session.api_urls["race"]`:
+
+```python
+from pydomosed import Session
+import asyncio
+
+token = "youraccesstoken"
+Session.base_url = Session.api_urls["race"]
+
+async def main():
+    async with Session(token) as raceapi:
+        info = await raceapi.merchants.get() # Возвращает объект Response
+        print(info)
+        
+
+asyncio.run(main())
 ```
 
 ## Установка
@@ -63,9 +88,9 @@ await session.merchants.getInfo(**params)
 
 - `data`: Словарь ответа, каким его вернул API
 - `success`: True или False, в зависимости от успешности запроса
-- `msg`: содержимое `.data["response"]["msg"]`, если запрос был успешен, иначе `None`
-- `error_msg`: содержимое `.data["error"]["error_msg"]`, если запрос не был успешен, иначе `None`
-- `error_code`: содержимое `.data["error"]["error_code"]`, если запрос не был успешен, иначе `None`
+- `msg`: содержимое `.data["response"]["msg"]`, если запрос был успешен, иначе `None` *(неактуально для приложения Гонки)*
+- `error_msg`: сообщение об ошибке, если запрос не был успешен, иначе `None`
+- `error_code`: код ошибки, если запрос не был успешен, иначе `None`
 - `request_info`: словарь:
 
 ```python
@@ -74,7 +99,8 @@ await session.merchants.getInfo(**params)
     "params": {
         "access_token": "some_token",
         ...
-    }
+    },
+    "base_url": "URL, использовавшийся в запросе"
 }
 ```
 
@@ -103,9 +129,34 @@ async def main():
         print(info)
         
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
-loop.run_forever() # Чтобы скрипт не завершил работу раньше времени, запускаем бесконечный event loop
+asyncio.run(main())
+```
+
+### Использование подписки для Гонок
+
+Чтобы использовать подписку на переводы c API Гонок, замените `Hook.method` на `"webhooks.create"`:
+
+```python
+from pydomosed import Session, Hook
+import asyncio
+
+token = "youraccesstoken"
+Session.base_url = Session.api_urls["race"]
+Hook.method = "webhooks.create"
+
+async def main():
+    async with Session(token) as raceapi:
+        racehook = Hook(domosed, url="http://your.doma.in", port=8080)
+
+        await racehook.start(
+            # Задаём функцию, которая будет вызываться на каждое событие. Здесь - вывод всех событий в консоль.
+            callback=lambda data: print(data) 
+        )
+        info = await raceapi.merchants.get() # Возвращает объект Response
+        print(info)
+        
+
+asyncio.run(main())
 ```
 
 Класс `pydomosed.hooks.Hook` принимает три обязательных параметра: 
