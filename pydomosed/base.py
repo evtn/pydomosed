@@ -7,7 +7,7 @@ JSONType = Union[Number, str, None, dict, list]
 
 api_urls = {
     "domosed": "https://minebattle.ru/api/",
-    "race": "https://race-api.danyarub.ru/api/"
+    "race": "https://race.danyarub.ru/api/"
 }
 
 class Session:
